@@ -1,9 +1,6 @@
-# WR Airflow DAG Package
-This repository contains the Airflow DAG for the weather routing decision model.
+# WR Airflow DAG Package - Local Setup
+This is the local pipeline setup without the Airflow requirement
 
-It also contains one example configuration in JSON format and the needed preprocessed weather files.
+execution is done with `python WR-pipeline_dag.py`
 
-## Changes needed
-The weather data are currently loaded locally in `preprocess.py` in the function `load_weather_forcast`. More historic preprocessed files are at http://datalake.vessel-ai.eu/minio/pilot4-weather-data/
-
-In `run_model.py` I included code to load the pretrained model from MLflow. Please check what changes are needed.
+Link to Zhaos thesis explaining the model (chapter 4): [LINK](https://helda.helsinki.fi/items/b848ca1a-0d2f-4972-b462-2a14886626ab)
