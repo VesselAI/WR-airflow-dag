@@ -13,13 +13,10 @@ from scipy.interpolate import interpn
 from geographiclib.geodesic import Geodesic as GD
 import pytz
 from datetime import datetime, timedelta
-from airflow.operators.python import get_current_context
-from airflow.models import Variable
 
-file_path = Variable.get('dags_folder') + '/weather_routing/'
 
-def run_preprocessing(data):
-    waypoint_t0 = pd.to_datetime(get_current_context()['dag_run'].conf['waypoint_t0'])
+def run_preprocessing(data, waypoint_t0):
+    waypoint_t0 = pd.to_datetime(waypoint_t0)
 
     data = fix_datatypes(data)
     data = filter_waypoints(data, waypoint_t0)
@@ -267,7 +264,7 @@ def interpolate_corresponding_weather_attributes(interpolation_full, waypoint_g0
     return flattened_weather
 
 def load_weather_forcast(forecast_name):
-    return np.load(file_path + 'gfs_NP_' + forecast_name + '.npy')
+    return np.load('gfs_NP_' + forecast_name + '.npy')
 
 def get_last_weather_forecast(waypoint_t0):
     '''return the forecast files names and the timestamps of the forecast'''

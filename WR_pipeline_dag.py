@@ -1,31 +1,16 @@
-from datetime import datetime
-from airflow.decorators import dag, task
-
-@dag(
-    description='Preprocess data and get prediction.',
-    start_date=datetime(2023, 7, 20),
-    schedule=None,
-)
 def WR_pipeline_dag():
-    @task(
-        task_id='load_data',
-    )
     def load_data():
         print('load data')
-        from weather_routing.load_data import load_data
+        from load_data import load_data
 
-        data = load_data()
-        return data
+        data, waypoint_t0 = load_data()
+        return data, waypoint_t0
 
-
-    @task(
-        task_id='preprocess'
-    )
-    def preprocess(data):
+    def preprocess(data, waypoint_t0):
         print('preprocess')
-        from weather_routing.preprocess import run_preprocessing
+        from preprocess import run_preprocessing
 
-        weather_points, points = run_preprocessing(data)
+        weather_points, points = run_preprocessing(data, waypoint_t0)
 
         waypoints, waypoint_t0, waypoint_g0 = points
 
@@ -36,13 +21,9 @@ def WR_pipeline_dag():
             'waypoint_g0': waypoint_g0,
         }
 
-
-    @task(
-        task_id='make_prediction'
-    )
     def make_prediction(values):
         print('infer prediction')
-        from weather_routing.run_model import run_model
+        from run_model import run_model
 
         weather_points = values['weather_points']
 
@@ -51,8 +32,8 @@ def WR_pipeline_dag():
         print('res', res)
 
 
-    data = load_data()
-    values = preprocess(data)
+    data, waypoint_t0 = load_data()
+    values = preprocess(data, waypoint_t0)
     make_prediction(values)
 
-dag = WR_pipeline_dag()
+WR_pipeline_dag()

@@ -4,3 +4,4 @@ geopandas==0.13.2
 geographiclib==2.0
 torch==2.0.1
 pytz
+scipy==1.11.3
